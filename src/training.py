@@ -153,5 +153,3 @@ def lstm(df_5min):
 
 processed_df = preprocessing_pipeline(df)
 lstm(processed_df)
-
-

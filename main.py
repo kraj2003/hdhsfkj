@@ -16,4 +16,4 @@ if __name__ == "__main__":
     model, scaler, _ = train_lstm(processed_df)
 
     # Evaluate latest
-    predict_future(model, scaler, processed_df, ['Delay_Detected', 'CPU', 'RAM'], config.WINDOW_SIZE)
+    predict_future(model, scaler, processed_df, ['Delay_Detected', 'CPU', 'RAM',"time_taken"], config.WINDOW_SIZE)

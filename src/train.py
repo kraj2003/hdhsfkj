@@ -1,4 +1,3 @@
-# src/train.py
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -11,13 +10,15 @@ import mlflow.keras
 from src import config
 
 def train_lstm(df):
-    features = ['Delay_Detected', 'CPU', 'RAM']
+    # Define features for model input (including all 4 features)
+    model_features = ['Delay_Detected', 'CPU', 'RAM', 'time_taken']  # All 4 features for the model
     target = 'Delay_Detected'
 
     # Target: delay in next 10 min (2 steps ahead)
     df['target'] = (df['Delay_Detected'].shift(-2).fillna(0) > 0).astype(int)
 
-    X_raw = df[features].values
+    # Use only model features for training
+    X_raw = df[model_features].values
     y_raw = df['target'].values
 
     # Sequence creation
@@ -31,9 +32,12 @@ def train_lstm(df):
     X_seq = np.array(X_seq)
     y_seq = np.array(y_seq)
 
-    # Scaling
+    # Scaling - fit on the flattened sequences then reshape back
     scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X_seq.reshape(-1, X_seq.shape[2])).reshape(X_seq.shape)
+    n_samples, n_timesteps, n_features = X_seq.shape
+    X_flat = X_seq.reshape(-1, n_features)  # Flatten to (n_samples * n_timesteps, n_features)
+    X_scaled_flat = scaler.fit_transform(X_flat)
+    X_scaled = X_scaled_flat.reshape(n_samples, n_timesteps, n_features)  # Reshape back
 
     # Train/validation split
     X_train, X_val, y_train, y_val = train_test_split(X_scaled, y_seq, test_size=0.2, shuffle=False)
@@ -45,20 +49,21 @@ def train_lstm(df):
     ])
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-    history = model.fit(X_train, y_train, validation_data=(X_val, y_val),
-                        epochs=config.EPOCHS, batch_size=config.BATCH_SIZE)
-
-    # Evaluation
-    y_pred = (model.predict(X_val) > 0.5).astype(int)
-    print("\nClassification Report:")
-    print(classification_report(y_val, y_pred))
+    # Start MLflow run
     with mlflow.start_run():
         mlflow.log_param("window_size", config.WINDOW_SIZE)
         mlflow.log_param("epochs", config.EPOCHS)
         mlflow.log_param("batch_size", config.BATCH_SIZE)
+        mlflow.log_param("model_features", model_features)
 
+        # Train the model
         history = model.fit(X_train, y_train, validation_data=(X_val, y_val),
                             epochs=config.EPOCHS, batch_size=config.BATCH_SIZE)
+
+        # Evaluation
+        y_pred = (model.predict(X_val) > 0.5).astype(int)
+        print("\nClassification Report:")
+        print(classification_report(y_val, y_pred))
 
         val_acc = history.history["val_accuracy"][-1]
         mlflow.log_metric("val_accuracy", val_acc)
@@ -69,6 +74,11 @@ def train_lstm(df):
     # Save model & scaler
     model.save(config.MODEL_PATH)
     joblib.dump(scaler, "models/scaler.pkl")
+    
+    # Also save the feature names for reference
+    joblib.dump(model_features, "models/feature_names.pkl")
+    
     print(f"Model saved to {config.MODEL_PATH}")
+    print(f"Model trained with 4 features: {model_features}")
 
     return model, scaler, history
