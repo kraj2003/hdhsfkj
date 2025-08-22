@@ -8,3 +8,6 @@ joblib
 fastapi
 tensorflow
 mlflow
+sqlalchemy
+pyodbc
+python-dotenv
