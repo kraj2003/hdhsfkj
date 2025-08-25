@@ -13,7 +13,7 @@ class DataManager:
         if self.use_sql:
             return self.db.get_data()
         else:
-            return pd.read_csv('your_data.csv')
+            return pd.read_csv('./data/raw_data.csv')
     
     def save_results(self, results_df):
         """Save results to CSV or SQL"""

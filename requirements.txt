@@ -11,3 +11,4 @@ mlflow
 sqlalchemy
 pyodbc
 python-dotenv
+uvicorn
