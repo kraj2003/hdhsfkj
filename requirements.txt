@@ -12,3 +12,8 @@ sqlalchemy
 pyodbc
 python-dotenv
 uvicorn
+pytest
+docker
+prometheus-client
+great-expectations
+pre-commit
