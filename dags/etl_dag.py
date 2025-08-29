@@ -90,8 +90,9 @@ dag1=DAG(
     default_args=default_args,
     description='ETL pipeline for system metrics',
     schedule_interval='*/10 * * * *',  # Every 10 minutes
-    catchup=False,
-    max_active_runs=1,
+    catchup=True,
+    # With catchup=True, Airflow automatically runs all missed DAGs since the start_date, letting you backfill historical data into SQL.
+    max_active_runs=1, # no parallel runs for this DAG; everything runs sequentially.
 )
 
 extract_task=PythonOperator(

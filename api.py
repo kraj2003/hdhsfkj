@@ -104,8 +104,6 @@ def add_health_endpoints(app: FastAPI):
     async def health_check():
         """Basic health check"""
         return {"status": "healthy", "timestamp": datetime.now().isoformat()}
-   
-    
 
 
 if __name__ == "__main__":
