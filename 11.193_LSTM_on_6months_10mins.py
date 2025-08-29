@@ -6,9 +6,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, classification_report, mean_absolute_error, mean_squared_error
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense
+from tensorflow.keras.layers import LSTM, Dense, Dropout
 
-data = pd.read_csv('MergedDF_192.168.11.193.csv')
+data = pd.read_csv('./data/raw_data.csv')
 df = pd.DataFrame(data)
 
 
@@ -113,9 +113,12 @@ def lstm(df_5min):
     # 5. LSTM Classification Model
     # ----------------------
     model = Sequential([
-        LSTM(64, input_shape=(X_scaled.shape[1], X_scaled.shape[2])),
-        Dense(1, activation='sigmoid')  # Binary output
-    ])
+        LSTM(64, input_shape=(X_train.shape[1], X_train.shape[2])),
+        Dropout(0.2),
+        Dense(32, activation='relu'),
+        Dropout(0.2),
+        Dense(1, activation='sigmoid')
+])
     
     print('Model compilation...')
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
@@ -151,7 +154,9 @@ def lstm(df_5min):
     model.save("my_lstm_model.h5")  # or .keras for the new format
     print('Model Saved...')
 
-processed_df = preprocessing_pipeline(df)
-lstm(processed_df)
 
+if __name__=="__main__":
+    df = preprocessing_pipeline(df)
 
+    model = lstm(df)
+    

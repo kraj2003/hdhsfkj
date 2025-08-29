@@ -49,6 +49,11 @@ class PredictionResponse(BaseModel):
     timestamp: str
     confidence: str
 
+@app.get("/")
+def home():
+    return {"message": "Delay Forecasting API", "status": "running"}
+
+
 @app.post("/predict", response_model=PredictionResponse)
 async def predict_delay(request: PredictionRequest):
     if model is None or scaler is None:
@@ -91,6 +96,17 @@ async def predict_delay(request: PredictionRequest):
     except Exception as e:
         logger.error(f"Prediction failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+def add_health_endpoints(app: FastAPI):
+    """Add comprehensive health check endpoints"""
+    
+    @app.get("/health")
+    async def health_check():
+        """Basic health check"""
+        return {"status": "healthy", "timestamp": datetime.now().isoformat()}
+   
+    
+
 
 if __name__ == "__main__":
     uvicorn.run("api:app", host="0.0.0.0", port=8001, reload=True)

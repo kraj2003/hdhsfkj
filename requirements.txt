@@ -11,6 +11,7 @@ mlflow
 sqlalchemy
 pyodbc
 python-dotenv
+apache-airflow==2.9.3
 uvicorn
 pytest
 docker
