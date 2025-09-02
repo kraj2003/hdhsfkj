@@ -23,7 +23,7 @@ def main():
     # data_manager.save_results(results_df)
 
     # Load the saved features
-    features = ['Delay_Detected', 'CPU', 'RAM', 'time_taken']
+    features = ['Delay_Detected', 'CPU', 'RAM','is_error']
     print(f"Using features: {features}")
 
     # Make prediction

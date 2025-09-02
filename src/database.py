@@ -7,15 +7,15 @@ import os
 class SimpleDB:
     def __init__(self):
         # Simple connection string
-        server = os.getenv('SQL_SERVER', 'localhost')
-        database = os.getenv('SQL_DATABASE', 'delay_prediction')
-        username = os.getenv('SQL_USERNAME', 'your_username')
-        password = os.getenv('SQL_PASSWORD', 'your_password')
+        server = os.getenv('SQL_SERVER', 'localhost') 
+        database = os.getenv('SQL_DATABASE', 'delay_prediction') 
+        username = os.getenv('SQL_USERNAME', 'your_username') 
+        password = os.getenv('SQL_PASSWORD', 'your_password') 
         
-        connection_string = f"mssql+pyodbc://{username}:{password}@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server"
+        connection_string = f"mssql+pyodbc://{username}:{password}@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server" 
         self.engine = create_engine(connection_string)
     
-    def get_data(self, hours_back=24):
+    def get_data(self, hours_back=24): 
         """Get recent data for predictions"""
         query = f"""
         SELECT datetime, time_taken, CPU, RAM, sc_status, is_error
