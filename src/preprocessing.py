@@ -4,28 +4,39 @@ from src import config
 
 def preprocessing_pipeline(df: pd.DataFrame) -> pd.DataFrame:
     print("Starting preprocessing...")
-    df['Delay_Detected'] = (df['time_taken'] > 2000).astype(int)
-    df['datetime'] = pd.to_datetime(df['datetime'])
-    df['date'] = pd.to_datetime(df['datetime'].dt.date)
-    df['minute'] = df['datetime'].dt.minute
-    df['second'] = df['datetime'].dt.second
-    df['day'] = df['datetime'].dt.day
-    df['month'] = df['datetime'].dt.month
-    df['year'] = df['datetime'].dt.year
+    df['Delay_Detected'] = (df['response_time'] > 2000).astype(int)
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    df['date'] = pd.to_datetime(df['timestamp'].dt.date)
+    df['minute'] = df['timestamp'].dt.minute
+    df['second'] = df['timestamp'].dt.second
+    df['day'] = df['timestamp'].dt.day
+    df['month'] = df['timestamp'].dt.month
+    df['year'] = df['timestamp'].dt.year
+
+    print("preprocessing",df[['CPU','RAM']])
 
     # Resample to fixed intervals
     df_5min = (
-        df.set_index('datetime')
+        df.set_index('timestamp')
         .resample(config.RESAMPLE_FREQ)
         .agg({
             'Delay_Detected': 'sum',
-            'time_taken': 'mean',
+            'response_time': 'mean',
             'CPU': 'mean',
             'RAM': 'mean',
-            'sc_status': 'mean',
+            'status_code': 'mean',
             'is_error': 'sum'
         })
     )
+    print(df_5min.head())
+    print("shape",df_5min.shape)
+    print(df_5min['CPU'].isna().sum())
+    
+    df_5min['RAM'] = df_5min['RAM'].fillna(method='ffill')
+    df_5min["CPU"]=df_5min['CPU'].fillna(0)
+    df_5min["time_taken"]=df_5min['response_time'].fillna(0)
+
+    print(df_5min['CPU'].isna().sum())
 
     # Lags
     for lag in config.LAGS:

@@ -77,19 +77,15 @@ def train_lstm(processed_df):
     
     # Create target variable
     processed_df['target'] = (processed_df['Delay_Detected'].shift(-2).fillna(0) > 0).astype(int)
-    print("preprocessed_data",processed_df)
+    print("preprocessed_data",processed_df.tail())
+    print(processed_df['CPU'].isna().sum())
     
     # Feature engineering
     X_raw = processed_df[config['features']].values
     y_raw = processed_df['target'].values
-    print("X_raw",X_raw)
-    print("Y_RAW",y_raw)
-
     
     # Create sequences
     X_seq, y_seq = create_sequences(X_raw, y_raw, config['window_size'])
-    print("X_seq",X_seq)
-    print("Y_seq",y_seq)
     
     # Scale features
     scaler = StandardScaler()
@@ -100,10 +96,10 @@ def train_lstm(processed_df):
         X_scaled, y_seq, test_size=0.2, shuffle=False
     )
     
-    print("X_train",X_train[:5])
-    print("X_val",X_val[:5])
-    print("Y_train",y_train[:5])
-    print("Y_test",y_val[:5])
+    # print("X_train",X_train[:5])
+    # print("X_val",X_val[:5])
+    # print("Y_train",y_train[:5])
+    # print("Y_test",y_val[:5])
 
     # Build model
     model = build_lstm_model(X_scaled.shape, config)

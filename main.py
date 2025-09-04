@@ -11,6 +11,8 @@ def main():
     # Load data
     data_manager = DataManager()
     df = data_manager.load_data()
+    print(df.head())
+    # print(df[['CPU','RAM','sc_status','time_taken','is_error']])
     
     # # Preprocess data
     processed_df = preprocessing_pipeline(df)
