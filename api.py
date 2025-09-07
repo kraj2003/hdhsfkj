@@ -63,7 +63,10 @@ async def predict_delay(request: PredictionRequest):
         df = data_manager.load_data()
         processed_df = preprocessing_pipeline(df)
 
-        features = ['Delay_Detected', 'CPU', 'RAM', 'time_taken']
+        features = ['CPU', 'RAM', 'response_time', 'is_error',
+                    'cpu_lag_1', 'ram_lag_1', 'response_lag_1',
+                    'cpu_rolling_mean', 'ram_rolling_mean', 'response_rolling_mean',
+                    'high_cpu', 'high_ram', 'is_peak_hour', 'hour']
         latest_data = processed_df[features].tail(24).values
 
         # Checks if we have enough data points for the model
@@ -85,6 +88,13 @@ async def predict_delay(request: PredictionRequest):
 
         confidence = "High" if abs(probability - 0.5) > 0.3 else "Medium" if abs(probability - 0.5) > 0.1 else "Low"
 
+        # ✅ Monitoring metrics
+        monitoring_metrics = monitor_predictions(
+            pred_probs=[probability], 
+            input_features=processed_df[["CPU", "RAM"]].tail(100)  # last 100 points for drift detection
+        )
+        logger.info(f"Monitoring: {monitoring_metrics}")
+
         logger.info(f"Prediction made: {prediction} (prob: {probability:.3f})")
 
         return PredictionResponse(
@@ -96,7 +106,24 @@ async def predict_delay(request: PredictionRequest):
     except Exception as e:
         logger.error(f"Prediction failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
+def monitor_predictions(pred_probs, input_features):
+    metrics = {}
+    # Std dev of prediction probabilities
+    metrics['pred_prob_std'] = float(np.std(pred_probs))
     
+    # Std dev of input features (CPU, RAM, etc.)
+    metrics['cpu_std'] = float(np.std(input_features['CPU']))
+    metrics['ram_std'] = float(np.std(input_features['RAM']))
+    
+    # Rolling std (e.g., last 50 predictions)
+    if len(pred_probs) >= 50:
+        metrics['rolling_pred_std'] = float(np.std(pred_probs[-50:]))
+    
+    return metrics
+
 def add_health_endpoints(app: FastAPI):
     """Add comprehensive health check endpoints"""
     
