@@ -26,8 +26,8 @@ data_manager = None
 async def lifespan(app: FastAPI):
     global model, scaler, data_manager
     try:
-        model = load_model("models/lstm_model_latest.h5")
-        scaler = joblib.load("models/scaler_latest.pkl")
+        model = load_model("./models/lstm_model_latest.h5")
+        scaler = joblib.load("./models/scaler_latest.pkl")
         data_manager = DataManager()
         logger.info("✅ Model and scaler loaded successfully")
     except Exception as e:

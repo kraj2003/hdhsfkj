@@ -1,0 +1,189 @@
+[2025-09-11T10:15:26.306+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-09-11T10:15:26.359+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: simple_monthly_training.train_model manual__2025-09-11T10:15:03.425119+00:00 [queued]>
+[2025-09-11T10:15:26.375+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: simple_monthly_training.train_model manual__2025-09-11T10:15:03.425119+00:00 [queued]>
+[2025-09-11T10:15:26.376+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2025-09-11T10:15:26.400+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): train_model> on 2025-09-11 10:15:03.425119+00:00
+[2025-09-11T10:15:26.432+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'simple_monthly_training', 'train_model', 'manual__2025-09-11T10:15:03.425119+00:00', '--job-id', '37', '--raw', '--subdir', 'DAGS_FOLDER/train_model_dag.py', '--cfg-path', '/tmp/tmp6n04wa_c']
+[2025-09-11T10:15:26.437+0000] {standard_task_runner.py:91} INFO - Job 37: Subtask train_model
+[2025-09-11T10:15:26.438+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:62 DeprecationWarning: This process (pid=845) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-09-11T10:15:26.441+0000] {standard_task_runner.py:64} INFO - Started process 856 to run task
+[2025-09-11T10:15:26.556+0000] {task_command.py:426} INFO - Running <TaskInstance: simple_monthly_training.train_model manual__2025-09-11T10:15:03.425119+00:00 [running]> on host 94617eeb311b
+[2025-09-11T10:15:26.733+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='ml-team' AIRFLOW_CTX_DAG_ID='simple_monthly_training' AIRFLOW_CTX_TASK_ID='train_model' AIRFLOW_CTX_EXECUTION_DATE='2025-09-11T10:15:03.425119+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-09-11T10:15:03.425119+00:00'
+[2025-09-11T10:15:26.740+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-09-11T10:15:26.764+0000] {logging_mixin.py:188} INFO - 🚀 Starting model training...
+[2025-09-11T10:16:16.472+0000] {logging_mixin.py:188} INFO - Loaded 3137151 records
+[2025-09-11T10:16:16.477+0000] {logging_mixin.py:188} INFO - Starting preprocessing...
+[2025-09-11T10:16:18.171+0000] {logging_mixin.py:188} INFO - Original data shape: (3137151, 23)
+[2025-09-11T10:16:18.185+0000] {logging_mixin.py:188} INFO - Delay instances: 143531/3137151 (4.6%)
+[2025-09-11T10:16:34.994+0000] {logging_mixin.py:188} INFO - After resampling: (40701, 5)
+[2025-09-11T10:16:35.280+0000] {logging_mixin.py:188} INFO - After feature engineering: (40701, 27)
+[2025-09-11T10:16:35.302+0000] {logging_mixin.py:188} INFO - Target distribution: {1: 22011, 0: 18690}
+[2025-09-11T10:16:35.305+0000] {logging_mixin.py:188} INFO - Target balance: 54.1% positive class
+[2025-09-11T10:16:35.315+0000] {logging_mixin.py:188} INFO - NaN values remaining: 21
+[2025-09-11T10:16:35.317+0000] {logging_mixin.py:188} INFO - Preprocessing complete.
+[2025-09-11T10:16:35.416+0000] {logging_mixin.py:188} INFO - train data                       Delay_Detected  response_time  ...  future_delay  target
+timestamp                                           ...                      
+2025-05-22 07:20:00             1.0    2415.625000  ...           1.0       1
+2025-05-22 07:25:00             1.0   10735.000000  ...           0.0       0
+2025-05-22 07:30:00             1.0   15960.714286  ...           1.0       1
+2025-05-22 07:35:00             0.0     710.666667  ...           NaN       0
+2025-05-22 07:40:00             1.0    1079.538462  ...           NaN       0
+
+[5 rows x 27 columns]
+[2025-09-11T10:16:35.472+0000] {logging_mixin.py:188} INFO - test_data                      Delay_Detected  response_time  ...  future_delay  target
+timestamp                                           ...                      
+2025-05-22 07:20:00             1.0    2415.625000  ...           1.0       1
+2025-05-22 07:25:00             1.0   10735.000000  ...           0.0       0
+2025-05-22 07:30:00             1.0   15960.714286  ...           1.0       1
+2025-05-22 07:35:00             0.0     710.666667  ...           NaN       0
+2025-05-22 07:40:00             1.0    1079.538462  ...           NaN       0
+
+[5 rows x 27 columns]
+[2025-09-11T10:16:37.950+0000] {logging_mixin.py:188} INFO - Processed to 40701 samples
+[2025-09-11T10:16:37.952+0000] {logging_mixin.py:188} INFO - Using features: ['CPU', 'RAM', 'response_time', 'is_error', 'cpu_rolling_mean', 'ram_rolling_mean', 'response_rolling_mean', 'high_cpu', 'high_ram', 'is_peak_hour', 'hour']
+[2025-09-11T10:16:37.961+0000] {logging_mixin.py:188} INFO - Feature matrix shape: (40701, 11)
+[2025-09-11T10:16:37.965+0000] {logging_mixin.py:188} INFO - Target shape: (40701,)
+[2025-09-11T10:16:37.968+0000] {logging_mixin.py:188} INFO - Target distribution: [18690 22011]
+[2025-09-11T10:16:38.179+0000] {logging_mixin.py:188} INFO - Sequence shape: X=(40677, 24, 11), y=(40677,)
+[2025-09-11T10:16:38.735+0000] {logging_mixin.py:188} INFO - Train set: (32541, 24, 11), (32541,)
+[2025-09-11T10:16:38.736+0000] {logging_mixin.py:188} INFO - Val set: (8136, 24, 11), (8136,)
+[2025-09-11T10:16:38.738+0000] {logging_mixin.py:188} INFO - Train target distribution: [14785 17756]
+[2025-09-11T10:16:38.739+0000] {logging_mixin.py:188} INFO - Val target distribution: [3885 4251]
+[2025-09-11T10:16:38.758+0000] {logging_mixin.py:188} INFO - Class weights: {0: 1.1004734528238078, 1: 0.9163381392205452}
+[2025-09-11T10:16:39.245+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/keras/src/layers/rnn/rnn.py:199 UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+[2025-09-11T10:16:40.172+0000] {logging_mixin.py:188} INFO - Epoch 1/20
+[2025-09-11T10:17:32.083+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/keras/src/callbacks/early_stopping.py:99 UserWarning: Early stopping conditioned on metric `val_recall` which is not available. Available metrics are: AUC,Precision,Recall,accuracy,loss,val_AUC,val_Precision,val_Recall,val_accuracy,val_loss
+[2025-09-11T10:17:32.114+0000] {logging_mixin.py:188} INFO - 1017/1017 - 52s - 51ms/step - AUC: 0.8222 - Precision: 0.8633 - Recall: 0.6625 - accuracy: 0.7586 - loss: 1.0434 - val_AUC: 0.8185 - val_Precision: 0.8237 - val_Recall: 0.6813 - val_accuracy: 0.7573 - val_loss: 0.9543
+[2025-09-11T10:17:32.131+0000] {logging_mixin.py:188} INFO - Epoch 2/20
+[2025-09-11T10:18:09.706+0000] {logging_mixin.py:188} INFO - 1017/1017 - 38s - 37ms/step - AUC: 0.8316 - Precision: 0.8802 - Recall: 0.6668 - accuracy: 0.7687 - loss: 1.0036 - val_AUC: 0.8153 - val_Precision: 0.8005 - val_Recall: 0.7060 - val_accuracy: 0.7544 - val_loss: 1.0058
+[2025-09-11T10:18:09.714+0000] {logging_mixin.py:188} INFO - Epoch 3/20
+[2025-09-11T10:18:44.184+0000] {logging_mixin.py:188} INFO - 1017/1017 - 34s - 34ms/step - AUC: 0.8347 - Precision: 0.8827 - Recall: 0.6683 - accuracy: 0.7705 - loss: 0.9935 - val_AUC: 0.8211 - val_Precision: 0.7956 - val_Recall: 0.7177 - val_accuracy: 0.7561 - val_loss: 0.9554
+[2025-09-11T10:18:44.192+0000] {logging_mixin.py:188} INFO - Epoch 4/20
+[2025-09-11T10:19:17.906+0000] {logging_mixin.py:188} INFO - 1017/1017 - 34s - 33ms/step - AUC: 0.8352 - Precision: 0.8894 - Recall: 0.6682 - accuracy: 0.7736 - loss: 0.9854 - val_AUC: 0.8252 - val_Precision: 0.8131 - val_Recall: 0.7031 - val_accuracy: 0.7604 - val_loss: 0.9698
+[2025-09-11T10:19:17.914+0000] {logging_mixin.py:188} INFO - Epoch 5/20
+[2025-09-11T10:19:51.641+0000] {logging_mixin.py:188} INFO - 1017/1017 - 34s - 33ms/step - AUC: 0.8362 - Precision: 0.8923 - Recall: 0.6637 - accuracy: 0.7728 - loss: 0.9819 - val_AUC: 0.8181 - val_Precision: 0.7916 - val_Recall: 0.7238 - val_accuracy: 0.7561 - val_loss: 0.9643
+[2025-09-11T10:19:51.648+0000] {logging_mixin.py:188} INFO - Epoch 6/20
+[2025-09-11T10:20:28.290+0000] {logging_mixin.py:188} INFO - 1017/1017 - 37s - 36ms/step - AUC: 0.8381 - Precision: 0.8911 - Recall: 0.6686 - accuracy: 0.7746 - loss: 0.9762 - val_AUC: 0.8218 - val_Precision: 0.8048 - val_Recall: 0.7177 - val_accuracy: 0.7616 - val_loss: 0.9572
+[2025-09-11T10:20:28.302+0000] {logging_mixin.py:188} INFO - Epoch 7/20
+[2025-09-11T10:21:06.138+0000] {logging_mixin.py:188} INFO - 1017/1017 - 38s - 37ms/step - AUC: 0.8393 - Precision: 0.8995 - Recall: 0.6637 - accuracy: 0.7760 - loss: 0.9702 - val_AUC: 0.8217 - val_Precision: 0.8004 - val_Recall: 0.7187 - val_accuracy: 0.7593 - val_loss: 0.9602
+[2025-09-11T10:21:06.145+0000] {logging_mixin.py:188} INFO - Epoch 8/20
+[2025-09-11T10:21:39.805+0000] {logging_mixin.py:188} INFO - 1017/1017 - 34s - 33ms/step - AUC: 0.8405 - Precision: 0.8922 - Recall: 0.6720 - accuracy: 0.7767 - loss: 0.9659 - val_AUC: 0.8175 - val_Precision: 0.7915 - val_Recall: 0.7217 - val_accuracy: 0.7553 - val_loss: 0.9953
+[2025-09-11T10:21:39.810+0000] {logging_mixin.py:188} INFO - Epoch 9/20
+[2025-09-11T10:22:13.643+0000] {logging_mixin.py:188} INFO - 1017/1017 - 34s - 33ms/step - AUC: 0.8402 - Precision: 0.8982 - Recall: 0.6648 - accuracy: 0.7760 - loss: 0.9635 - val_AUC: 0.8227 - val_Precision: 0.8276 - val_Recall: 0.6888 - val_accuracy: 0.7624 - val_loss: 0.9408
+[2025-09-11T10:22:13.657+0000] {logging_mixin.py:188} INFO - Epoch 10/20
+[2025-09-11T10:22:47.849+0000] {logging_mixin.py:188} INFO - 1017/1017 - 34s - 34ms/step - AUC: 0.8416 - Precision: 0.9024 - Recall: 0.6625 - accuracy: 0.7767 - loss: 0.9592 - val_AUC: 0.8202 - val_Precision: 0.7893 - val_Recall: 0.7307 - val_accuracy: 0.7574 - val_loss: 1.0093
+[2025-09-11T10:22:47.856+0000] {logging_mixin.py:188} INFO - Epoch 11/20
+[2025-09-11T10:23:21.554+0000] {logging_mixin.py:188} INFO - 1017/1017 - 34s - 33ms/step - AUC: 0.8422 - Precision: 0.9034 - Recall: 0.6666 - accuracy: 0.7792 - loss: 0.9555 - val_AUC: 0.8200 - val_Precision: 0.7941 - val_Recall: 0.7292 - val_accuracy: 0.7597 - val_loss: 1.0546
+[2025-09-11T10:23:21.561+0000] {logging_mixin.py:188} INFO - Epoch 12/20
+[2025-09-11T10:23:57.291+0000] {logging_mixin.py:188} INFO - 1017/1017 - 36s - 35ms/step - AUC: 0.8421 - Precision: 0.9028 - Recall: 0.6673 - accuracy: 0.7793 - loss: 0.9538 - val_AUC: 0.8205 - val_Precision: 0.8369 - val_Recall: 0.6723 - val_accuracy: 0.7603 - val_loss: 0.9568
+[2025-09-11T10:23:57.300+0000] {logging_mixin.py:188} INFO - Epoch 13/20
+[2025-09-11T10:24:29.712+0000] {logging_mixin.py:188} INFO - 1017/1017 - 32s - 32ms/step - AUC: 0.8430 - Precision: 0.9048 - Recall: 0.6638 - accuracy: 0.7784 - loss: 0.9507 - val_AUC: 0.8173 - val_Precision: 0.8064 - val_Recall: 0.7095 - val_accuracy: 0.7592 - val_loss: 1.0266
+[2025-09-11T10:24:29.718+0000] {logging_mixin.py:188} INFO - Epoch 14/20
+[2025-09-11T10:25:01.226+0000] {logging_mixin.py:188} INFO - 1017/1017 - 31s - 31ms/step - AUC: 0.8444 - Precision: 0.9060 - Recall: 0.6647 - accuracy: 0.7794 - loss: 0.9459 - val_AUC: 0.8148 - val_Precision: 0.8085 - val_Recall: 0.7161 - val_accuracy: 0.7630 - val_loss: 0.9724
+[2025-09-11T10:25:01.237+0000] {logging_mixin.py:188} INFO - Epoch 15/20
+[2025-09-11T10:25:28.880+0000] {logging_mixin.py:188} INFO - 1017/1017 - 28s - 27ms/step - AUC: 0.8451 - Precision: 0.9047 - Recall: 0.6659 - accuracy: 0.7794 - loss: 0.9455 - val_AUC: 0.8130 - val_Precision: 0.7714 - val_Recall: 0.7462 - val_accuracy: 0.7518 - val_loss: 1.0129
+[2025-09-11T10:25:28.884+0000] {logging_mixin.py:188} INFO - Epoch 16/20
+[2025-09-11T10:25:54.467+0000] {logging_mixin.py:188} INFO - 1017/1017 - 26s - 25ms/step - AUC: 0.8456 - Precision: 0.9074 - Recall: 0.6653 - accuracy: 0.7803 - loss: 0.9402 - val_AUC: 0.8163 - val_Precision: 0.8155 - val_Recall: 0.6975 - val_accuracy: 0.7595 - val_loss: 0.9696
+[2025-09-11T10:25:54.478+0000] {logging_mixin.py:188} INFO - Epoch 17/20
+[2025-09-11T10:26:19.456+0000] {logging_mixin.py:188} INFO - 1017/1017 - 25s - 25ms/step - AUC: 0.8451 - Precision: 0.9095 - Recall: 0.6670 - accuracy: 0.7821 - loss: 0.9394 - val_AUC: 0.8146 - val_Precision: 0.7891 - val_Recall: 0.7304 - val_accuracy: 0.7571 - val_loss: 0.9889
+[2025-09-11T10:26:19.460+0000] {logging_mixin.py:188} INFO - Epoch 18/20
+[2025-09-11T10:26:44.643+0000] {logging_mixin.py:188} INFO - 1017/1017 - 25s - 25ms/step - AUC: 0.8470 - Precision: 0.9116 - Recall: 0.6677 - accuracy: 0.7833 - loss: 0.9352 - val_AUC: 0.8170 - val_Precision: 0.7991 - val_Recall: 0.7222 - val_accuracy: 0.7600 - val_loss: 1.0010
+[2025-09-11T10:26:44.650+0000] {logging_mixin.py:188} INFO - Epoch 19/20
+[2025-09-11T10:27:10.301+0000] {logging_mixin.py:188} INFO - 1017/1017 - 26s - 25ms/step - AUC: 0.8469 - Precision: 0.9140 - Recall: 0.6616 - accuracy: 0.7814 - loss: 0.9340 - val_AUC: 0.8183 - val_Precision: 0.7989 - val_Recall: 0.7187 - val_accuracy: 0.7585 - val_loss: 0.9752
+[2025-09-11T10:27:10.305+0000] {logging_mixin.py:188} INFO - Epoch 20/20
+[2025-09-11T10:27:36.541+0000] {logging_mixin.py:188} INFO - 1017/1017 - 26s - 26ms/step - AUC: 0.8480 - Precision: 0.9122 - Recall: 0.6694 - accuracy: 0.7844 - loss: 0.9290 - val_AUC: 0.8183 - val_Precision: 0.8033 - val_Recall: 0.7100 - val_accuracy: 0.7576 - val_loss: 1.0021
+[2025-09-11T10:27:37.297+0000] {logging_mixin.py:188} INFO -   1/255 ━━━━━━━━━━━━━━━━━━━━ 2:16 536ms/step
+[2025-09-11T10:27:37.346+0000] {logging_mixin.py:188} INFO -  10/255 ━━━━━━━━━━━━━━━━━━━━ 1s 6ms/step    
+[2025-09-11T10:27:37.398+0000] {logging_mixin.py:188} INFO -  20/255 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step
+[2025-09-11T10:27:37.452+0000] {logging_mixin.py:188} INFO -  30/255 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step
+[2025-09-11T10:27:37.507+0000] {logging_mixin.py:188} INFO -  40/255 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step
+[2025-09-11T10:27:37.562+0000] {logging_mixin.py:188} INFO -  49/255 ━━━━━━━━━━━━━━━━━━━━ 1s 6ms/step
+[2025-09-11T10:27:37.613+0000] {logging_mixin.py:188} INFO -  58/255 ━━━━━━━━━━━━━━━━━━━━ 1s 6ms/step
+[2025-09-11T10:27:37.666+0000] {logging_mixin.py:188} INFO -  67/255 ━━━━━━━━━━━━━━━━━━━━ 1s 6ms/step
+[2025-09-11T10:27:37.722+0000] {logging_mixin.py:188} INFO -  76/255 ━━━━━━━━━━━━━━━━━━━━ 1s 6ms/step
+[2025-09-11T10:27:37.774+0000] {logging_mixin.py:188} INFO -  85/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:37.830+0000] {logging_mixin.py:188} INFO -  94/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:37.885+0000] {logging_mixin.py:188} INFO - 104/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:37.940+0000] {logging_mixin.py:188} INFO - 114/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:37.994+0000] {logging_mixin.py:188} INFO - 123/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.046+0000] {logging_mixin.py:188} INFO - 132/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.100+0000] {logging_mixin.py:188} INFO - 141/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.152+0000] {logging_mixin.py:188} INFO - 150/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.204+0000] {logging_mixin.py:188} INFO - 159/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.254+0000] {logging_mixin.py:188} INFO - 167/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.306+0000] {logging_mixin.py:188} INFO - 175/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.361+0000] {logging_mixin.py:188} INFO - 182/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.416+0000] {logging_mixin.py:188} INFO - 189/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.471+0000] {logging_mixin.py:188} INFO - 196/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.525+0000] {logging_mixin.py:188} INFO - 204/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.577+0000] {logging_mixin.py:188} INFO - 211/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.634+0000] {logging_mixin.py:188} INFO - 219/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.689+0000] {logging_mixin.py:188} INFO - 227/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.743+0000] {logging_mixin.py:188} INFO - 236/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.796+0000] {logging_mixin.py:188} INFO - 245/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:38.849+0000] {logging_mixin.py:188} INFO - 253/255 ━━━━━━━━━━━━━━━━━━━━ 0s 6ms/step
+[2025-09-11T10:27:39.245+0000] {logging_mixin.py:188} INFO - 255/255 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step
+[2025-09-11T10:27:39.264+0000] {logging_mixin.py:188} INFO - 255/255 ━━━━━━━━━━━━━━━━━━━━ 3s 8ms/step
+[2025-09-11T10:27:39.403+0000] {logging_mixin.py:188} INFO - 
+Confusion Matrix:
+[2025-09-11T10:27:39.406+0000] {logging_mixin.py:188} INFO - [[3146  739]
+ [1233 3018]]
+[2025-09-11T10:27:39.415+0000] {logging_mixin.py:188} INFO - Best F1 threshold: 0.36150452 F1: 0.7607405649176106
+[2025-09-11T10:27:39.438+0000] {logging_mixin.py:188} INFO - checking the accuracy
+[2025-09-11T10:27:39.439+0000] {logging_mixin.py:188} INFO - [0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1] [0 1 0 0 0 1 0 1 0 1 1 1 1 1 0 0 0 0 0 1 0 1 1 0 1 1 1 1 1 1]
+[2025-09-11T10:27:39.440+0000] {logging_mixin.py:188} INFO - 
+==================================================
+[2025-09-11T10:27:39.441+0000] {logging_mixin.py:188} INFO - MODEL PERFORMANCE:
+[2025-09-11T10:27:39.442+0000] {logging_mixin.py:188} INFO - Accuracy: 0.758
+[2025-09-11T10:27:39.442+0000] {logging_mixin.py:188} INFO - Precision: 0.803
+[2025-09-11T10:27:39.443+0000] {logging_mixin.py:188} INFO - Recall: 0.710
+[2025-09-11T10:27:39.444+0000] {logging_mixin.py:188} INFO - F1-Score: 0.754
+[2025-09-11T10:27:39.445+0000] {logging_mixin.py:188} INFO - ==================================================
+[2025-09-11T10:27:39.446+0000] {logging_mixin.py:188} INFO - 
+Detailed Classification Report:
+[2025-09-11T10:27:39.455+0000] {logging_mixin.py:188} INFO -               precision    recall  f1-score   support
+
+    No Delay       0.72      0.81      0.76      3885
+       Delay       0.80      0.71      0.75      4251
+
+    accuracy                           0.76      8136
+   macro avg       0.76      0.76      0.76      8136
+weighted avg       0.76      0.76      0.76      8136
+[2025-09-11T10:27:39.460+0000] {saving_api.py:83} WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+[2025-09-11T10:27:40.007+0000] {logging_mixin.py:188} WARNING - 2025/09/11 10:27:39 WARNING mlflow.utils.git_utils: Failed to import Git (the Git executable is probably not on your PATH), so Git SHA is not available. Error: Failed to initialize: Bad git executable.
+The git executable must be specified in one of the following ways:
+    - be included in your $PATH
+    - be set via $GIT_PYTHON_GIT_EXECUTABLE
+    - explicitly set via git.refresh(<full-path-to-git-executable>)
+
+All git commands will error until this is rectified.
+
+This initial message can be silenced or aggravated in the future by setting the
+$GIT_PYTHON_REFRESH environment variable. Use one of the following values:
+    - quiet|q|silence|s|silent|none|n|0: for no message or exception
+    - warn|w|warning|log|l|1: for a warning message (logging level CRITICAL, displayed by default)
+    - error|e|exception|raise|r|2: for a raised exception
+
+Example:
+    export GIT_PYTHON_REFRESH=quiet
+[2025-09-11T10:27:40.663+0000] {logging_mixin.py:188} WARNING - 2025/09/11 10:27:40 WARNING mlflow.models.model: `artifact_path` is deprecated. Please use `name` instead.
+[2025-09-11T10:27:40.698+0000] {logging_mixin.py:188} WARNING - 2025/09/11 10:27:40 WARNING mlflow.keras.save: You are saving a Keras model without specifying model signature.
+[2025-09-11T10:27:54.704+0000] {logging_mixin.py:188} WARNING - 2025/09/11 10:27:54 WARNING mlflow.utils.environment: Encountered an unexpected error while inferring pip requirements (model URI: /tmp/tmpb2kjpn9w/model, flavor: keras). Fall back to return ['keras==3.11.3']. Set logging level to DEBUG to see the full traceback.
+[2025-09-11T10:27:54.712+0000] {logging_mixin.py:188} WARNING - 2025/09/11 10:27:54 WARNING mlflow.models.model: Model logged without a signature and input example. Please set `input_example` parameter when logging the model to auto infer the model signature.
+[2025-09-11T10:27:54.723+0000] {logging_mixin.py:188} WARNING - 2025/09/11 10:27:54 WARNING mlflow.models.model: `artifact_path` is deprecated. Please use `name` instead.
+[2025-09-11T10:27:54.758+0000] {logging_mixin.py:188} WARNING - 2025/09/11 10:27:54 WARNING mlflow.sklearn: Model was missing function: predict. Not logging python_function flavor!
+[2025-09-11T10:27:58.873+0000] {logging_mixin.py:188} WARNING - 2025/09/11 10:27:58 WARNING mlflow.models.model: Model logged without a signature and input example. Please set `input_example` parameter when logging the model to auto infer the model signature.
+[2025-09-11T10:27:58.892+0000] {logging_mixin.py:188} INFO - 
+Model logged to MLflow with run_id: 6952b067ff9a4c4c95922f9c465e9968
+[2025-09-11T10:27:58.893+0000] {logging_mixin.py:188} INFO - 
+✅ VERIFICATION:
+[2025-09-11T10:27:58.894+0000] {logging_mixin.py:188} INFO - ✅ Model uses NO current delay information!
+[2025-09-11T10:27:58.895+0000] {logging_mixin.py:188} INFO - ✅ Prediction based on system health only
+[2025-09-11T10:27:58.895+0000] {logging_mixin.py:188} INFO - ✅ Features used: 11
+[2025-09-11T10:27:58.904+0000] {logging_mixin.py:188} INFO - ✅ Training complete - F1: 0.754
+[2025-09-11T10:28:02.442+0000] {python.py:237} INFO - Done. Returned value was: training_successful
+[2025-09-11T10:28:02.443+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-09-11T10:28:02.505+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=simple_monthly_training, task_id=train_model, run_id=manual__2025-09-11T10:15:03.425119+00:00, execution_date=20250911T101503, start_date=20250911T101526, end_date=20250911T102802
+[2025-09-11T10:28:02.714+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 0
+[2025-09-11T10:28:02.860+0000] {taskinstance.py:3503} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-09-11T10:28:02.864+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

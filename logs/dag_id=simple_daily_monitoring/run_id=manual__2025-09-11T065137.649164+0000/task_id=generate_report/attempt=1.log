@@ -1,0 +1,20 @@
+[2025-09-11T06:52:19.810+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-09-11T06:52:19.878+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: simple_daily_monitoring.generate_report manual__2025-09-11T06:51:37.649164+00:00 [queued]>
+[2025-09-11T06:52:19.899+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: simple_daily_monitoring.generate_report manual__2025-09-11T06:51:37.649164+00:00 [queued]>
+[2025-09-11T06:52:19.901+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2025-09-11T06:52:19.941+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): generate_report> on 2025-09-11 06:51:37.649164+00:00
+[2025-09-11T06:52:19.965+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'simple_daily_monitoring', 'generate_report', 'manual__2025-09-11T06:51:37.649164+00:00', '--job-id', '13', '--raw', '--subdir', 'DAGS_FOLDER/monitor_dag.py', '--cfg-path', '/tmp/tmp6bz9n20b']
+[2025-09-11T06:52:19.971+0000] {standard_task_runner.py:91} INFO - Job 13: Subtask generate_report
+[2025-09-11T06:52:19.989+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:62 DeprecationWarning: This process (pid=418) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-09-11T06:52:19.993+0000] {standard_task_runner.py:64} INFO - Started process 420 to run task
+[2025-09-11T06:52:20.125+0000] {task_command.py:426} INFO - Running <TaskInstance: simple_daily_monitoring.generate_report manual__2025-09-11T06:51:37.649164+00:00 [running]> on host 02ae08abed04
+[2025-09-11T06:52:20.391+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='ops-team' AIRFLOW_CTX_DAG_ID='simple_daily_monitoring' AIRFLOW_CTX_TASK_ID='generate_report' AIRFLOW_CTX_EXECUTION_DATE='2025-09-11T06:51:37.649164+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-09-11T06:51:37.649164+00:00'
+[2025-09-11T06:52:20.396+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-09-11T06:52:20.446+0000] {logging_mixin.py:188} INFO - 📋 Generating daily report...
+[2025-09-11T06:52:20.448+0000] {logging_mixin.py:188} INFO - ✅ Report saved: reports/daily_report_20250911.json
+[2025-09-11T06:52:20.458+0000] {python.py:237} INFO - Done. Returned value was: report_generated
+[2025-09-11T06:52:20.460+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-09-11T06:52:20.539+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=simple_daily_monitoring, task_id=generate_report, run_id=manual__2025-09-11T06:51:37.649164+00:00, execution_date=20250911T065137, start_date=20250911T065219, end_date=20250911T065220
+[2025-09-11T06:52:20.983+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 0
+[2025-09-11T06:52:21.011+0000] {taskinstance.py:3503} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-09-11T06:52:21.014+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

@@ -1,0 +1,20 @@
+[2025-09-12T05:52:02.295+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-09-12T05:52:02.356+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: simple_hourly_predictions.make_prediction scheduled__2025-09-12T04:00:00+00:00 [queued]>
+[2025-09-12T05:52:02.373+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: simple_hourly_predictions.make_prediction scheduled__2025-09-12T04:00:00+00:00 [queued]>
+[2025-09-12T05:52:02.374+0000] {taskinstance.py:2306} INFO - Starting attempt 2 of 3
+[2025-09-12T05:52:02.401+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): make_prediction> on 2025-09-12 04:00:00+00:00
+[2025-09-12T05:52:02.415+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'simple_hourly_predictions', 'make_prediction', 'scheduled__2025-09-12T04:00:00+00:00', '--job-id', '52', '--raw', '--subdir', 'DAGS_FOLDER/prediction_dag.py', '--cfg-path', '/tmp/tmp3c7akyfj']
+[2025-09-12T05:52:02.419+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:62 DeprecationWarning: This process (pid=1462) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-09-12T05:52:02.420+0000] {standard_task_runner.py:91} INFO - Job 52: Subtask make_prediction
+[2025-09-12T05:52:02.420+0000] {standard_task_runner.py:64} INFO - Started process 1464 to run task
+[2025-09-12T05:52:02.514+0000] {task_command.py:426} INFO - Running <TaskInstance: simple_hourly_predictions.make_prediction scheduled__2025-09-12T04:00:00+00:00 [running]> on host c556a26b394a
+[2025-09-12T05:52:02.616+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='ops-team' AIRFLOW_CTX_DAG_ID='simple_hourly_predictions' AIRFLOW_CTX_TASK_ID='make_prediction' AIRFLOW_CTX_EXECUTION_DATE='2025-09-12T04:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-09-12T04:00:00+00:00'
+[2025-09-12T05:52:02.618+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-09-12T05:52:02.632+0000] {logging_mixin.py:188} INFO - 🔮 Making delay prediction...
+[2025-09-12T05:53:09.179+0000] {logging_mixin.py:188} INFO - ❌ Not enough recent data
+[2025-09-12T05:53:09.341+0000] {python.py:237} INFO - Done. Returned value was: insufficient_data
+[2025-09-12T05:53:09.343+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-09-12T05:53:09.375+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=simple_hourly_predictions, task_id=make_prediction, run_id=scheduled__2025-09-12T04:00:00+00:00, execution_date=20250912T040000, start_date=20250912T055202, end_date=20250912T055309
+[2025-09-12T05:53:09.507+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 0
+[2025-09-12T05:53:09.542+0000] {taskinstance.py:3503} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-09-12T05:53:09.557+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

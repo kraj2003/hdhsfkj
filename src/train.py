@@ -3,14 +3,16 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 from sklearn.utils.class_weight import compute_class_weight
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 import joblib
+from sklearn.metrics import precision_recall_curve
 from src.mlflow_manager import MLflowManager
 import json
+import tensorflow as tf
 
 def create_sequences(X_raw, y_raw, window_size):
     """Create sequences for LSTM training - NO DATA LEAKAGE"""
@@ -28,6 +30,14 @@ def create_sequences(X_raw, y_raw, window_size):
     
     return np.array(X_seq), np.array(y_seq)
 
+def weighted_bce(y_true, y_pred):
+    # Example: penalize false negatives 3x more
+    weight_for_1 = 3.0  # class=1 (delay)
+    weight_for_0 = 1.0
+    bce = tf.keras.losses.binary_crossentropy(y_true, y_pred)
+    weights = y_true * weight_for_1 + (1 - y_true) * weight_for_0
+    return bce * weights
+
 def build_lstm_model(input_shape, config):
     """Build LSTM model with proper architecture"""
     model = Sequential([
@@ -40,11 +50,12 @@ def build_lstm_model(input_shape, config):
         Dense(16, activation='relu'),
         Dense(1, activation='sigmoid')
     ])
+
     
     model.compile(
-        loss='binary_crossentropy',
+        loss=weighted_bce,
         optimizer='adam',
-        metrics=['accuracy']
+        metrics=['accuracy','Precision', 'Recall', 'AUC']
     )
     
     return model
@@ -55,12 +66,12 @@ def train_lstm(processed_df):
     # Configuration
     config = {
         'window_size': 24,  # 4 hours of 10-minute intervals
-        'epochs': 50,
+        'epochs': 20,
         'batch_size': 32,
         # CRITICAL: Remove Delay_Detected from features to prevent data leakage
         'features': [
             'CPU', 'RAM', 'response_time', 'is_error',
-            'cpu_lag_1', 'ram_lag_1', 'response_lag_1',
+            # 'cpu_lag_1', 'ram_lag_1', 'response_lag_1',
             'cpu_rolling_mean', 'ram_rolling_mean', 'response_rolling_mean',
             'high_cpu', 'high_ram', 'is_peak_hour', 'hour'
         ],
@@ -102,9 +113,11 @@ def train_lstm(processed_df):
     X_scaled = scaler.fit_transform(X_seq.reshape(-1, n_features)).reshape(n_samples, n_timesteps, n_features)
     
     # Train-test split (temporal split to avoid data leakage)
-    split_idx = int(len(X_scaled) * 0.8)
-    X_train, X_val = X_scaled[:split_idx], X_scaled[split_idx:]
-    y_train, y_val = y_seq[:split_idx], y_seq[split_idx:]
+    # split_idx = int(len(X_scaled) * 0.8)
+    # X_train, X_val = X_scaled[:split_idx], X_scaled[split_idx:]
+    # y_train, y_val = y_seq[:split_idx], y_seq[split_idx:]
+
+    X_train,X_val,y_train,y_val=train_test_split(X_scaled,y_seq,test_size=0.2,shuffle=False)
     
     print(f"Train set: {X_train.shape}, {y_train.shape}")
     print(f"Val set: {X_val.shape}, {y_val.shape}")
@@ -122,14 +135,16 @@ def train_lstm(processed_df):
     
     # Build and train model
     model = build_lstm_model(X_scaled.shape, config)
-    
     # Early stopping
     early_stopping = EarlyStopping(
-        monitor='val_loss',
+        monitor='val_recall',
+        mode='max',
         patience=10,
         restore_best_weights=True
     )
     
+    # class_weight_dict = {0: 1.0, 1: 6.0}  
+
     # Train model
     history = model.fit(
         X_train, y_train,
@@ -138,13 +153,29 @@ def train_lstm(processed_df):
         batch_size=config['batch_size'],
         class_weight=class_weight_dict,
         callbacks=[early_stopping],
-        verbose=1
+        verbose=2
     )
     
     # Evaluate model
     y_pred_prob = model.predict(X_val)
     y_pred = (y_pred_prob > 0.5).astype(int).flatten()
+
+    # Confusion Matrix
+    cm = confusion_matrix(y_val, y_pred)
+    print("\nConfusion Matrix:")
+    print(cm)
     
+
+    probs = y_pred_prob.flatten()
+    precisions, recalls, thresholds = precision_recall_curve(y_val, probs)
+
+    # Option A: choose threshold giving highest F1
+    f1s = 2 * (precisions * recalls) / (precisions + recalls + 1e-12)
+    best_idx = f1s.argmax()
+    best_thresh = thresholds[best_idx]
+    print("Best F1 threshold:", best_thresh, "F1:", f1s[best_idx])
+
+        
     # Calculate metrics safely
     try:
         metrics = {
@@ -155,6 +186,9 @@ def train_lstm(processed_df):
         }
     except:
         metrics = {'accuracy': 0, 'precision': 0, 'recall': 0, 'f1_score': 0}
+
+    
+    precisions, recalls, thresholds = precision_recall_curve(y_val, y_pred_prob)
 
     print("checking the accuracy")
 
@@ -174,8 +208,8 @@ def train_lstm(processed_df):
         print(classification_report(y_val, y_pred, target_names=['No Delay', 'Delay']))
     
     # Save model and metadata
-    model.save("models/lstm_model_latest.h5")
-    joblib.dump(scaler, "models/scaler_latest.pkl")
+    model.save("./models/lstm_model_latest.h5")
+    joblib.dump(scaler, "./models/scaler_latest.pkl")
     
     # Save feature names for prediction
     with open("feature_names.json", "w") as f:

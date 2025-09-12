@@ -14,7 +14,7 @@ def main():
     # Load data
     data_manager = DataManager()
     df = data_manager.load_data()
-    print(df.head())
+    # print(df.head())
     # print(df[['CPU','RAM','sc_status','time_taken','is_error']])
     
     # # Preprocess data
@@ -32,9 +32,12 @@ def main():
         ]
     print(f"Using features: {features}")
 
+    # Filter last 6 hours
+    last_6_hours_df = processed_df[processed_df['timestamp'] >= (processed_df['timestamp'].max() - pd.Timedelta(hours=6))]
+
     # Make prediction
     print("\nMaking prediction...")
-    prediction_class, prediction_prob = predict_future(model, scaler, processed_df,features, config.WINDOW_SIZE)
+    prediction_class, prediction_prob = predict_future(model, scaler, last_6_hours_df,features, config.WINDOW_SIZE)
 
     results_df = pd.DataFrame({'prediction': [prediction_class]})
     data_manager.save_results(results_df)
