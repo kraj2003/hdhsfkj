@@ -7,7 +7,7 @@ def predict_future(model, scaler, df, features, window_size):
     
     # Load the actual features used during training
     try:
-        with open("feature_names.json", "r") as f:
+        with open("./models/feature_names.json", "r") as f:
             trained_features = json.load(f)
         print(f"Using trained features: {trained_features}")
         features = trained_features
@@ -61,7 +61,7 @@ def predict_future(model, scaler, df, features, window_size):
     # Make prediction
     try:
         future_prob = model.predict(latest_scaled, verbose=0)[0][0]
-        future_class = int(future_prob > 0.5)
+        future_class = int(future_prob > 0.4)
     except Exception as e:
         print(f"Prediction error: {e}")
         print(f"Model input shape expected: {model.input_shape}")

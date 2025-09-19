@@ -44,8 +44,9 @@ def make_prediction():
         model = load_model("./models/lstm_model_latest.h5")
         scaler = joblib.load("./models/scaler_latest.pkl")
         
-        with open("feature_names.json", "r") as f:
-            features = json.load(f)
+        # with open("feature_names.json", "r") as f:
+        #     features = json.load(f)
+        features=processed_df.columns.tolist()
 
         print("✅ Features type:", type(features))
         print("✅ Features content:", features)
@@ -78,21 +79,27 @@ def make_prediction():
 with open("feature_names.json", "r") as f:
             features = json.load(f)
 
+# features=processed_df.columns.tolist()
 # Load recent data
-data_manager = DataManager()
-df = data_manager.load_data()
+# data_manager = DataManager()
+# df = data_manager.load_data()
 
-print("✅ Features type:", type(features))
-print("✅ Features content:", features)
-# Get last few hours of data
-df['timestamp'] = pd.to_datetime(df['timestamp'])
-recent_cutoff = df['timestamp'].max() - timedelta(hours=3)
-recent_df = df[df['timestamp'] >= recent_cutoff].copy()
-print(recent_df)
-processed_df = preprocessing_pipeline(recent_df)
-print(processed_df)
-print(type(processed_df))
-print(processed_df.head())
+# print("✅ Features type:", type(features))
+# print("✅ Features content:", features)
+# # Get last few hours of data
+# df['timestamp'] = pd.to_datetime(df['timestamp'])
+# recent_cutoff = df['timestamp'].max() - timedelta(hours=3)
+# recent_df = df[df['timestamp'] >= recent_cutoff].copy()
+# print(recent_df)
+# processed_df = preprocessing_pipeline(recent_df)
+# print(processed_df)
+# print(type(processed_df))
+# print(processed_df.head())
+features_path = "./feature_names.json"
+with open(features_path, 'r') as f:
+        features = json.load(f)
+print(features)
+
 
 if __name__ == "__main__":
     make_prediction()

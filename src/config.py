@@ -4,7 +4,7 @@ DATA_PATH = "./data/raw_data.csv"
 MODEL_PATH = "models/my_lstm_model.h5"
 
 # Preprocessing
-RESAMPLE_FREQ = "5T"   # 5 minutes
+RESAMPLE_FREQ = "5min"   # 5 minutes
 LAGS = [2, 4, 6, 12]   # past delays
 ROLLING_AVG_WINDOW = 12
 ROLLING_STD_WINDOW = 36

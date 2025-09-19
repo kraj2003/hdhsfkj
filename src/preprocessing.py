@@ -73,7 +73,7 @@ def preprocessing_pipeline(df: pd.DataFrame) -> pd.DataFrame:
     
     # Create proper target - predict delays 2 periods ahead WITHOUT using current delay
     # This removes data leakage completely
-    df_5min['future_delay'] = df_5min['Delay_Detected'].shift(-2)
+    df_5min['future_delay'] = df_5min['Delay_Detected'].shift(-1)
     df_5min['target'] = df_5min['future_delay'].fillna(0).astype(int)
     
     # Drop rows with NaN in lag features (first few rows)
@@ -85,7 +85,7 @@ def preprocessing_pipeline(df: pd.DataFrame) -> pd.DataFrame:
     print(f"NaN values remaining: {df_5min.isnull().sum().sum()}")
     
     print("Preprocessing complete.")
-    df_train=df_5min
+    df_train = df_5min.iloc[:-5]
     df_test = df_5min.tail(5)
     print("train data ",df_train.tail(5))
     print("test_data",df_test.head())

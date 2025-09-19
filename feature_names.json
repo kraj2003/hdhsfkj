@@ -1,1 +1,1 @@
-["CPU", "RAM", "response_time", "is_error", "cpu_rolling_mean", "ram_rolling_mean", "response_rolling_mean", "high_cpu", "high_ram", "is_peak_hour", "hour"]
+["CPU", "RAM", "response_time", "cpu_rolling_mean", "ram_rolling_mean", "response_rolling_mean", "high_cpu", "high_ram", "is_peak_hour"]

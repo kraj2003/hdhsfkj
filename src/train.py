@@ -41,21 +41,19 @@ def weighted_bce(y_true, y_pred):
 def build_lstm_model(input_shape, config):
     """Build LSTM model with proper architecture"""
     model = Sequential([
-        LSTM(config['lstm_units'], return_sequences=True, input_shape=(input_shape[1], input_shape[2])),
+        LSTM(config['lstm_units'], return_sequences=False, input_shape=(input_shape[1], input_shape[2])),
         Dropout(config['dropout_rate']),
-        LSTM(config['lstm_units'] // 2),
-        Dropout(config['dropout_rate']),
-        Dense(32, activation='relu'),
-        Dropout(config['dropout_rate']),
+        # LSTM(config['lstm_units'] // 2),
+        # Dropout(config['dropout_rate']),
         Dense(16, activation='relu'),
         Dense(1, activation='sigmoid')
     ])
 
-    
+    # tf.keras.losses.BinaryCrossentropy()
     model.compile(
-        loss=weighted_bce,
+        loss='binary_crossentropy',
         optimizer='adam',
-        metrics=['accuracy','Precision', 'Recall', 'AUC']
+        metrics=['accuracy','Precision','Recall']
     )
     
     return model
@@ -66,14 +64,13 @@ def train_lstm(processed_df):
     # Configuration
     config = {
         'window_size': 24,  # 4 hours of 10-minute intervals
-        'epochs': 20,
+        'epochs': 30,
         'batch_size': 32,
         # CRITICAL: Remove Delay_Detected from features to prevent data leakage
         'features': [
-            'CPU', 'RAM', 'response_time', 'is_error',
-            # 'cpu_lag_1', 'ram_lag_1', 'response_lag_1',
+            'CPU', 'RAM', 'response_time', 
             'cpu_rolling_mean', 'ram_rolling_mean', 'response_rolling_mean',
-            'high_cpu', 'high_ram', 'is_peak_hour', 'hour'
+            'high_cpu', 'high_ram', 'is_peak_hour'
         ],
         'dropout_rate': 0.3,
         'lstm_units': 64
@@ -132,6 +129,8 @@ def train_lstm(processed_df):
     else:
         class_weight_dict = None
         print("Warning: Only one class in training data!")
+
+    # class_weight_dict = {0: 1.5, 1: 5.0}   
     
     # Build and train model
     model = build_lstm_model(X_scaled.shape, config)
@@ -155,17 +154,8 @@ def train_lstm(processed_df):
         callbacks=[early_stopping],
         verbose=2
     )
-    
     # Evaluate model
     y_pred_prob = model.predict(X_val)
-    y_pred = (y_pred_prob > 0.5).astype(int).flatten()
-
-    # Confusion Matrix
-    cm = confusion_matrix(y_val, y_pred)
-    print("\nConfusion Matrix:")
-    print(cm)
-    
-
     probs = y_pred_prob.flatten()
     precisions, recalls, thresholds = precision_recall_curve(y_val, probs)
 
@@ -175,6 +165,12 @@ def train_lstm(processed_df):
     best_thresh = thresholds[best_idx]
     print("Best F1 threshold:", best_thresh, "F1:", f1s[best_idx])
 
+    y_pred = (y_pred_prob > best_thresh ).astype(int).flatten()
+
+    # Confusion Matrix
+    cm = confusion_matrix(y_val, y_pred)
+    print("\nConfusion Matrix:")
+    print(cm)
         
     # Calculate metrics safely
     try:
@@ -187,12 +183,8 @@ def train_lstm(processed_df):
     except:
         metrics = {'accuracy': 0, 'precision': 0, 'recall': 0, 'f1_score': 0}
 
-    
-    precisions, recalls, thresholds = precision_recall_curve(y_val, y_pred_prob)
-
     print("checking the accuracy")
-
-    print(y_pred[:30],y_val[:30])
+    print(y_pred[:30], y_val[:30])
     
     print("\n" + "="*50)
     print("MODEL PERFORMANCE:")
@@ -215,11 +207,22 @@ def train_lstm(processed_df):
     with open("feature_names.json", "w") as f:
         json.dump(config['features'], f)
     
-    # Log to MLflow
+    # Log to MLflow - MODIFY THIS SECTION:
     try:
         mlflow_manager = MLflowManager()
-        run_id = mlflow_manager.log_training_run(model, scaler, history, config, metrics)
-        print(f"\nModel logged to MLflow with run_id: {run_id}")
+        # Pass the additional parameters for enhanced logging
+        run_id = mlflow_manager.log_training_run(
+            model=model, 
+            scaler=scaler, 
+            history=history, 
+            config=config, 
+            metrics=metrics,
+            y_val=y_val,           # Add this
+            y_pred=y_pred,         # Add this  
+            y_pred_prob=y_pred_prob # Add this
+        )
+        print(f"\n✅ Model logged to MLflow with run_id: {run_id}")
+        print(f"✅ Visualizations saved to MLflow")
     except Exception as e:
         print(f"MLflow logging failed: {e}")
         run_id = "local_only"

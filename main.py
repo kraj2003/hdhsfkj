@@ -9,6 +9,7 @@ from src.data_manager import DataManager
 from datetime import datetime, timedelta
 import logging
 logger = logging.getLogger(__name__)
+import json
 
 def main():
     # Load data
@@ -23,31 +24,23 @@ def main():
     # Train model
     model, scaler, _ = train_lstm(processed_df)
 
-    # Load the saved features
-    features= [
-            'CPU', 'RAM', 'response_time', 'is_error',
-            'cpu_lag_1', 'ram_lag_1', 'response_lag_1',
-            'cpu_rolling_mean', 'ram_rolling_mean', 'response_rolling_mean',
-            'high_cpu', 'high_ram', 'is_peak_hour', 'hour'
-        ]
+    with open("./models/feature_names.json", "r") as f:
+        features = json.load(f)
     print(f"Using features: {features}")
 
     # Filter last 6 hours
-    last_6_hours_df = processed_df[processed_df['timestamp'] >= (processed_df['timestamp'].max() - pd.Timedelta(hours=6))]
+    # last_6_hours_df = processed_df[processed_df['response_time'] >= (processed_df['response_time'].max() - pd.Timedelta(hours=6))]
+    data=pd.read_csv('./data/merged_data.csv')
+    processed_df_2 = preprocessing_pipeline(data)
+    print(f"NaN values remaining: {processed_df.isnull().sum().sum()}")
 
     # Make prediction
     print("\nMaking prediction...")
-    prediction_class, prediction_prob = predict_future(model, scaler, last_6_hours_df,features, config.WINDOW_SIZE)
+    prediction_class, prediction_prob = predict_future(model, scaler, processed_df_2,features, config.WINDOW_SIZE)
 
     results_df = pd.DataFrame({'prediction': [prediction_class]})
     data_manager.save_results(results_df)
 
-    future_time = datetime.now() + timedelta(minutes=10)
-
-    print(f"Predicted delay in next 10 minutes? {bool(prediction_class)} "
-                f"(Prob: {prediction_class:.3f}, Confidence: {prediction_prob}) "
-                f"at {future_time.strftime('%Y-%m-%d %H:%M:%S')}")
-        
     print("\nResult:")
     print(f"Delay predicted: {'Yes' if prediction_class else 'No'}")
     print(f"Probability: {prediction_prob:.3f}")
