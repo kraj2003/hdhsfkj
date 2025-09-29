@@ -198,13 +198,18 @@ def train_lstm(processed_df):
     if len(np.unique(y_val)) > 1 and len(np.unique(y_pred)) > 1:
         print("\nDetailed Classification Report:")
         print(classification_report(y_val, y_pred, target_names=['No Delay', 'Delay']))
+
+
+    # Save best threshold
+    with open("./models/best_threshold.json", "w") as f:
+        json.dump({"threshold": float(best_thresh)}, f)
     
     # Save model and metadata
     model.save("./models/lstm_model_latest.h5")
     joblib.dump(scaler, "./models/scaler_latest.pkl")
     
     # Save feature names for prediction
-    with open("feature_names.json", "w") as f:
+    with open("./models/feature_names.json", "w") as f:
         json.dump(config['features'], f)
     
     # Log to MLflow - MODIFY THIS SECTION:

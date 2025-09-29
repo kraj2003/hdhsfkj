@@ -7,7 +7,7 @@ def preprocessing_pipeline(df: pd.DataFrame) -> pd.DataFrame:
     print("Starting preprocessing...")
     
     # Create delay detection based on response time threshold
-    df['Delay_Detected'] = (df['response_time'] > 2000).astype(int)
+    df['Delay_Detected'] = (df['response_time'] > config.RESPONSE_TIME_THRESHOLD).astype(int)
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     
     print(f"Original data shape: {df.shape}")
@@ -85,8 +85,8 @@ def preprocessing_pipeline(df: pd.DataFrame) -> pd.DataFrame:
     print(f"NaN values remaining: {df_5min.isnull().sum().sum()}")
     
     print("Preprocessing complete.")
-    df_train = df_5min.iloc[:-5]
-    df_test = df_5min.tail(5)
+    df_train = df_5min.iloc[:-10]
+    df_test = df_5min.tail(10)
     print("train data ",df_train.tail(5))
     print("test_data",df_test.head())
 

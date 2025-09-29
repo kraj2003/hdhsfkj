@@ -33,7 +33,7 @@ services:
     command: webserver
     entrypoint: |
       bash -c "
-        pip install mlflow joblib pandas numpy scikit-learn tensorflow &&
+        pip install mlflow joblib pandas numpy scikit-learn tensorflow seaborn &&
         airflow db init &&
         airflow users create --username admin --password admin --firstname Admin --lastname Admin --role Admin --email admin@admin.org || true &&
         airflow webserver
@@ -68,7 +68,7 @@ services:
     image: apache/airflow:2.9.3
     command:  |
       bash -c "
-        pip install mlflow joblib pandas numpy scikit-learn tensorflow &&
+        pip install mlflow joblib pandas numpy scikit-learn tensorflow seaborn &&
         airflow scheduler
       "
     environment:

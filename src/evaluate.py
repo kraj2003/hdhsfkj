@@ -1,6 +1,7 @@
 # src/evaluate.py - FIXED VERSION
 import numpy as np
 import json
+from src import config
 
 def predict_future(model, scaler, df, features, window_size):
     """Fixed prediction function with proper feature handling"""
@@ -40,6 +41,7 @@ def predict_future(model, scaler, df, features, window_size):
             latest_seq = np.zeros((window_size, len(features)))
     else:
         latest_seq = df[features].tail(window_size).values
+
     
     # Handle NaN values
     latest_seq = np.nan_to_num(latest_seq, nan=0.0)
@@ -61,7 +63,14 @@ def predict_future(model, scaler, df, features, window_size):
     # Make prediction
     try:
         future_prob = model.predict(latest_scaled, verbose=0)[0][0]
-        future_class = int(future_prob > 0.4)
+        probs=future_prob.flatten()
+        
+        with open("./models/best_threshold.json", "r") as f:
+            best_thresh = json.load(f)["threshold"]
+
+        future_class = (probs >0.3).astype(int).flatten()
+        print(future_class)
+        # future_class = int(future_prob > 0.3)
     except Exception as e:
         print(f"Prediction error: {e}")
         print(f"Model input shape expected: {model.input_shape}")
@@ -72,6 +81,7 @@ def predict_future(model, scaler, df, features, window_size):
     result_text = "Yes" if future_class else "No"
     confidence = "High" if abs(future_prob - 0.7) > 0.3 else "Medium" if abs(future_prob - 0.5) > 0.1 else "Low"
     
+    # This measures how far the probability is from the “uncertain zone”.
     print(f"\nPredicted delay in next 10 minutes? {result_text} (Prob: {future_prob:.3f}, Confidence: {confidence})")
     
     return future_class, future_prob

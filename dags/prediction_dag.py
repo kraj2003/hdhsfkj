@@ -14,7 +14,7 @@ default_args = {
     'start_date': datetime(2024, 1, 1),
     'retries': 1,
     'retry_delay': timedelta(minutes=2),
-    'email': ['khuhsirajpurohit.com'],
+    'email': ['khushirajpurohit2021@gmail.com'],
     'email_on_failure': False,
     'email_on_retry': False,
 }
@@ -62,7 +62,8 @@ def make_5min_prediction():
         # Load your data (exactly like main.py)
         print("📊 Loading data...")
         data_manager = DataManager()
-        df = data_manager.load_data()
+        # df = data_manager.load_data()
+        df=pd.read_csv('./data/merged_data.csv')
         print(f"✅ Loaded {len(df)} records")
         
         # Preprocess data (exactly like main.py)
