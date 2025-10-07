@@ -1,4 +1,3 @@
-# main.py - Corrected Version
 import pandas as pd
 import joblib
 from src import config
@@ -17,13 +16,8 @@ def main():
     # Load data
     data_manager = DataManager()
     df = data_manager.load_data()
-    # print(df.head())
-    # print(df[['CPU','RAM','sc_status','time_taken','is_error']])
-    
     # Preprocess data
     processed_df = preprocessing_pipeline(df)
-
-    # total_records,issues,is_valid,null_percentage = validate_raw_data(processed_df)
     
     # Train model
     model, scaler, _ = train_lstm(processed_df)
@@ -38,12 +32,10 @@ def main():
     # last_6_hours_df = processed_df[processed_df['response_time'] >= (processed_df['response_time'].max() - pd.Timedelta(hours=6))]
     data=pd.read_csv('./data/final_dataset_3.csv')
     processed_df_2 = preprocessing_pipeline(data)
-    # total_records,issues,is_valid,null_percentage = validate_raw_data(processed_df_2)
-    # print(f"Total records: {total_records}")
-    # print(f"Data validation issues: {issues}")
-    # print(f"Is data valid: {is_valid}")
-    # print(f"Percentage of NaN values: {null_percentage:.2f}%")
-    print(f"NaN values remaining: {processed_df_2.isnull().sum().sum()}")
+
+    # Data Validation
+    total_records,issues,is_valid,null_percentage = validate_raw_data(processed_df_2)
+    
 
     # Make prediction
     print("\nMaking prediction...")

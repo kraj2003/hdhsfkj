@@ -1,4 +1,3 @@
-# src/train.py - FIXED VERSION
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -64,7 +63,7 @@ def train_lstm(processed_df):
     # Configuration
     config = {
         'window_size': 24,  # 4 hours of 10-minute intervals
-        'epochs': 30,
+        'epochs': 10,
         'batch_size': 32,
         # CRITICAL: Remove Delay_Detected from features to prevent data leakage
         'features': [

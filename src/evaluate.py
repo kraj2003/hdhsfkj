@@ -1,4 +1,3 @@
-# src/evaluate.py - FIXED VERSION
 import numpy as np
 import json
 from src import config

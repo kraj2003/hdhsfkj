@@ -1,6 +1,3 @@
-# src/config_fixed.py - Simple fix for feature consistency
-# Just add this to your existing config.py or replace it
-
 # Data paths
 DATA_PATH = "./data/raw_data.csv"
 MODEL_PATH = "models/lstm_model_latest.h5"

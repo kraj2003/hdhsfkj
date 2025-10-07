@@ -113,7 +113,6 @@ def monitor_model_health():
         # Check your model files (exactly your file paths)
         model_files = {
             'main_model': "./models/lstm_model_latest.h5",
-            # 'backup_model': "./models/my_lstm_model.h5",  # Your original model
             'scaler': "./models/scaler_latest.pkl",
             'features': "./models/feature_names.json"
         }

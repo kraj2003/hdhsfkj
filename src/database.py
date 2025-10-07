@@ -1,4 +1,3 @@
-# src/database.py - SIMPLE VERSION
 import pandas as pd
 import sqlalchemy as sa
 from sqlalchemy import create_engine

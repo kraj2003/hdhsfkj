@@ -18,3 +18,4 @@ docker
 prometheus-client
 great-expectations
 pre-commit
+tabulate

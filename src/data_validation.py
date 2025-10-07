@@ -1,4 +1,3 @@
-# src/data_validator.py - Simple Data Validation
 import pandas as pd
 import numpy as np
 from typing import List, Dict
@@ -34,7 +33,7 @@ def validate_raw_data(df: pd.DataFrame) -> Dict:
     high_null_cols = null_pct[null_pct > 0.1].index.tolist()
     if high_null_cols:
         issues.append(f"High null percentage in: {high_null_cols}")
-    
+
     return {
         'total_records': len(df),
         'issues': issues,
